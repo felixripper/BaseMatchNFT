@@ -147,6 +147,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Farcaster manifest endpoint
+  app.get('/.well-known/farcaster.json', (req, res) => {
+    const manifest = {
+      version: "1",
+      name: "BaseMatchNFT",
+      description: "Exclusive NFT-gated dating platform on Base Network",
+      iconUrl: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/icon.png`,
+      homeUrl: process.env.NEXT_PUBLIC_URL || 'http://localhost:3000',
+      imageUrl: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/og-image.png`,
+      buttonTitle: "Find Your Match",
+      splashImageUrl: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/splash.png`,
+      splashBackgroundColor: "#0f0f0f",
+      webhookUrl: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/api/webhook`,
+      frames: {
+        version: "1",
+        pages: [
+          {
+            path: "/",
+            title: "BaseMatchNFT - Elite Connections",
+            description: "Find your perfect match in the exclusive NFT community on Base"
+          },
+          {
+            path: "/discover",
+            title: "Discover - BaseMatchNFT",
+            description: "Swipe through curated profiles of NFT holders"
+          },
+          {
+            path: "/matches",
+            title: "Matches - BaseMatchNFT",
+            description: "Your perfect matches await"
+          }
+        ]
+      }
+    };
+
+    res.json(manifest);
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
