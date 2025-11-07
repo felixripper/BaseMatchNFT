@@ -2,18 +2,27 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { NFTVerificationModal } from "@/components/NFTVerificationModal";
 import { useLocation } from "wouter";
-import { Sparkles, Shield, Users, Heart, Coins } from "lucide-react";
+import { Sparkles, Shield, Users, Heart, Coins, Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { BaseStats } from "@/components/BaseStats";
+import { useFarcaster } from "@/components/FarcasterProvider";
 import heroImage from "@assets/generated_images/Hero_image_upscale_setting_5e417ba3.png";
 
 export default function Landing() {
   const [showModal, setShowModal] = useState(false);
   const [, setLocation] = useLocation();
+  const { context, shareToFarcaster, isInFarcaster } = useFarcaster();
 
   const handleVerified = () => {
     setShowModal(false);
     setLocation("/discover");
+  };
+
+  const handleShareToFarcaster = () => {
+    shareToFarcaster(
+      "Just discovered BaseMatchNFT - an exclusive NFT-gated dating platform on Base! 🚀💕 #BaseMatchNFT #NFTDating #BaseNetwork",
+      "https://basematchnft.com"
+    );
   };
 
   return (
@@ -47,6 +56,12 @@ export default function Landing() {
             <span className="text-sm font-medium text-primary">
               NFT-Gated Exclusive Community on Base
             </span>
+            {isInFarcaster && (
+              <Badge variant="secondary" className="ml-2">
+                <Share2 className="w-3 h-3 mr-1" />
+                Farcaster Miniapp
+              </Badge>
+            )}
             <Badge variant="secondary" className="ml-2">
               <Coins className="w-3 h-3 mr-1" />
               Base Network
@@ -58,6 +73,16 @@ export default function Landing() {
             <br />
             Connections Happen
           </h2>
+
+          {isInFarcaster && context?.user && (
+            <div className="mb-6 p-4 bg-white/10 backdrop-blur-md rounded-lg border border-white/20">
+              <p className="text-white/90 text-center">
+                Welcome, <span className="font-semibold">{context.user.displayName || context.user.username}</span>! 👋
+                <br />
+                Ready to find your perfect match in the Base ecosystem?
+              </p>
+            </div>
+          )}
 
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
             An exclusive dating platform built on Base mainnet. Verify your NFT
@@ -82,6 +107,17 @@ export default function Landing() {
             >
               Learn More
             </Button>
+            {isInFarcaster && (
+              <Button
+                onClick={handleShareToFarcaster}
+                size="lg"
+                variant="secondary"
+                className="text-lg h-14 px-8"
+              >
+                <Share2 className="w-5 h-5 mr-2" />
+                Share on Farcaster
+              </Button>
+            )}
           </div>
         </div>
       </section>

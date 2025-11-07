@@ -5,11 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Settings, Edit, Sparkles, MapPin, Briefcase, GraduationCap, Moon, Sun, Coins } from "lucide-react";
 import { Identity } from '@coinbase/onchainkit/identity';
 import { NFTCard } from '@coinbase/onchainkit/nft';
+import { useFarcaster } from '@/components/FarcasterProvider';
 import femaleProfile1 from "@assets/generated_images/Female_profile_example_one_9f1894cf.png";
 import { useTheme } from "@/components/ThemeProvider";
 
 export default function Profile() {
   const { theme, setTheme } = useTheme();
+  const { context, shareToFarcaster, isInFarcaster } = useFarcaster();
 
   const profile = {
     name: "Sophia",
@@ -20,6 +22,11 @@ export default function Profile() {
     occupation: "Art Curator at MoMA",
     education: "Columbia University",
     interests: ["Art", "Wine", "Travel", "Architecture", "Photography", "Jazz"],
+  };
+
+  const handleShareProfile = () => {
+    const profileText = `Check out my profile on BaseMatchNFT! ${profile.bio} #BaseMatchNFT #NFTDating #Farcaster`;
+    shareToFarcaster(profileText);
   };
 
   return (
@@ -125,10 +132,36 @@ export default function Profile() {
           </div>
         </Card>
 
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Your NFTs on Base</h3>
+                <Card className="p-6">
+          <h3 className="text-lg font-semibold mb-4">Farcaster Integration</h3>
           <div className="space-y-3">
-            <NFTCard contractAddress="0x1234567890123456789012345678901234567890" tokenId="1" />
+            {isInFarcaster && context?.user ? (
+              <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                {context.user.pfp && (
+                  <img
+                    src={context.user.pfp}
+                    alt="Farcaster Profile"
+                    className="w-10 h-10 rounded-full"
+                  />
+                )}
+                <div>
+                  <div className="font-medium">{context.user.displayName || context.user.username}</div>
+                  <div className="text-sm text-muted-foreground">@{context.user.username}</div>
+                </div>
+              </div>
+            ) : (
+              <div className="text-sm text-muted-foreground">
+                Connect with Farcaster to share your profile and connect with the decentralized social network.
+              </div>
+            )}
+            <Button
+              onClick={handleShareProfile}
+              variant="outline"
+              className="w-full"
+              disabled={!isInFarcaster}
+            >
+              Share Profile on Farcaster
+            </Button>
           </div>
         </Card>
       </main>
