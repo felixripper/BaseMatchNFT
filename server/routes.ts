@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { storage } from "./storage";
 
-export async function registerRoutes(app: Express): Promise<void> {
+export function registerRoutes(app: Express): void {
   // put application routes here
   // prefix all routes with /api
 
