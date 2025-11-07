@@ -58,7 +58,9 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
 });
 
 // Setup for local development only
-if (app.get("env") === "development") {
+const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL;
+
+if (!isProduction) {
   (async () => {
     const { setupVite } = await import("./vite");
     await setupVite(app, null as any);
