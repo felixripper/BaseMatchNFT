@@ -8,6 +8,9 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Wallet, CheckCircle2, Loader2 } from "lucide-react";
+import { useConnect, useAccount, useDisconnect } from 'wagmi'
+import { verifyNFTOwnership } from '@/lib/nftVerification'
+import { useAuth } from '@/components/AuthProvider'
 
 interface NFTVerificationModalProps {
   open: boolean;
@@ -20,22 +23,33 @@ export function NFTVerificationModal({
   onOpenChange,
   onVerified,
 }: NFTVerificationModalProps) {
-  const [isConnecting, setIsConnecting] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
-  const [walletConnected, setWalletConnected] = useState(false);
+  const { connect, connectors, isPending } = useConnect()
+  const { address, isConnected } = useAccount()
+  const { disconnect } = useDisconnect()
+  const { verifyWallet } = useAuth()
 
-  const handleConnectWallet = async () => {
-    setIsConnecting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsConnecting(false);
-    setWalletConnected(true);
+  const handleConnectWallet = (connector: any) => {
+    connect({ connector })
   };
 
   const handleVerifyNFT = async () => {
+    if (!isConnected || !address) return;
+
     setIsVerifying(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      const hasNFT = await verifyNFTOwnership(address);
+      if (hasNFT) {
+        await verifyWallet(address);
+        onVerified();
+      } else {
+        alert('No NFT ownership detected. Please ensure you own an NFT on Base network.');
+      }
+    } catch (error) {
+      console.error('Verification error:', error);
+      alert('Verification failed. Please try again.');
+    }
     setIsVerifying(false);
-    onVerified();
   };
 
   return (
@@ -52,53 +66,36 @@ export function NFTVerificationModal({
         </DialogHeader>
 
         <div className="space-y-4 py-6">
-          {!walletConnected ? (
+          {!isConnected ? (
             <div className="space-y-3">
-              <Button
-                data-testid="button-connect-metamask"
-                onClick={handleConnectWallet}
-                disabled={isConnecting}
-                className="w-full h-12 text-base"
-                variant="outline"
-              >
-                {isConnecting ? (
-                  <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Connecting...
-                  </>
-                ) : (
-                  <>
-                    <Wallet className="w-5 h-5 mr-2" />
-                    Connect MetaMask
-                  </>
-                )}
-              </Button>
-
-              <Button
-                data-testid="button-connect-wallet"
-                onClick={handleConnectWallet}
-                disabled={isConnecting}
-                className="w-full h-12 text-base"
-                variant="outline"
-              >
-                {isConnecting ? (
-                  <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Connecting...
-                  </>
-                ) : (
-                  <>
-                    <Wallet className="w-5 h-5 mr-2" />
-                    WalletConnect
-                  </>
-                )}
-              </Button>
+              {connectors.map((connector) => (
+                <Button
+                  key={connector.id}
+                  data-testid={`button-connect-${connector.id}`}
+                  onClick={() => handleConnectWallet(connector)}
+                  disabled={isPending}
+                  className="w-full h-12 text-base"
+                  variant="outline"
+                >
+                  {isPending ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Connecting...
+                    </>
+                  ) : (
+                    <>
+                      <Wallet className="w-5 h-5 mr-2" />
+                      Connect {connector.name}
+                    </>
+                  )}
+                </Button>
+              ))}
             </div>
           ) : (
             <div className="space-y-4">
               <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground bg-accent/50 p-3 rounded-md">
                 <CheckCircle2 className="w-4 h-4 text-primary" />
-                <span>Wallet Connected</span>
+                <span>Wallet Connected: {address?.slice(0, 6)}...{address?.slice(-4)}</span>
               </div>
 
               <Button
