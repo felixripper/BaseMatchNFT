@@ -147,6 +147,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Farcaster manifest endpoint
+  app.get('/.well-known/farcaster.json', (req, res) => {
+    const manifest = {
+      frame: {
+        name: "Base Match",
+        version: "1",
+        iconUrl: "https://basematch.vercel.app/icon.png",
+        homeUrl: "https://basematch.vercel.app",
+        imageUrl: "https://basematch.vercel.app/image.png",
+        buttonTitle: "Match Now",
+        splashImageUrl: "https://basematch.vercel.app/splash.png",
+        splashBackgroundColor: "#0f0f0f",
+        webhookUrl: "https://basematch.vercel.app/api/webhook",
+        subtitle: "Exclusive NFT-gated dating platform on Base Network",
+        description: "Find your perfect match in the exclusive NFT community on Base",
+        primaryCategory: "social",
+        tags: ["messaging", "network", "social"],
+        tagline: "Exclusive dating platform",
+        ogTitle: "Your perfect matches await",
+        ogDescription: "Your perfect matches await"
+      },
+      accountAssociation: {
+        header: "eyJmaWQiOjQ0MTYxMywidHlwZSI6ImF1dGgiLCJrZXkiOiIweEYwZTdiY0U1QmNiNzlENjgxMGE4MzU3NDY3MjYzM2E2ODk4MUU2OUIifQ",
+        payload: "eyJkb21haW4iOiJiYXNlbWF0Y2gudmVyY2VsLmFwcCJ9",
+        signature: "xaGIQd6EhDvQajU1HI2hLTeRXMSE+Zwsf80Y050NU417RKOSUuZTYnKK8kW7z11Rq/AvVyy42D1HPHZWx4q3Yhw="
+      }
+    };
+
+    res.json(manifest);
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
