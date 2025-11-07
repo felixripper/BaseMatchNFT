@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { NFTVerificationModal } from "@/components/NFTVerificationModal";
 import { useLocation } from "wouter";
-import { Sparkles, Shield, Users, Heart } from "lucide-react";
+import { Sparkles, Shield, Users, Heart, Coins } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { BaseStats } from "@/components/BaseStats";
 import heroImage from "@assets/generated_images/Hero_image_upscale_setting_5e417ba3.png";
 
 export default function Landing() {
@@ -43,8 +45,12 @@ export default function Landing() {
           <div className="mb-6 inline-flex items-center gap-2 px-4 py-2 bg-primary/10 backdrop-blur-md rounded-full border border-primary/20">
             <Sparkles className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium text-primary">
-              NFT-Gated Exclusive Community
+              NFT-Gated Exclusive Community on Base
             </span>
+            <Badge variant="secondary" className="ml-2">
+              <Coins className="w-3 h-3 mr-1" />
+              Base Network
+            </Badge>
           </div>
 
           <h2 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6">
@@ -54,8 +60,8 @@ export default function Landing() {
           </h2>
 
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            An exclusive dating platform on Base mainnet. Verify your NFT
-            ownership to access a curated community of exceptional individuals.
+            An exclusive dating platform built on Base mainnet. Verify your NFT
+            ownership to access a curated community of exceptional individuals in the Base ecosystem.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -119,6 +125,22 @@ export default function Landing() {
                 ensuring every match has potential.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 bg-muted/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h3 className="text-3xl font-serif font-bold mb-4">
+              Why Choose Base?
+            </h3>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Built on Coinbase's Layer 2 solution for fast, secure, and cost-effective transactions
+            </p>
+          </div>
+          <div className="max-w-md mx-auto">
+            <BaseStats />
           </div>
         </div>
       </section>

@@ -1,11 +1,14 @@
 import { createRoot } from "react-dom/client";
-import { WagmiConfig } from 'wagmi'
-import { config } from './lib/wagmi'
+import { OnchainKitProvider } from '@coinbase/onchainkit';
+import { base } from 'wagmi/chains';
 import App from "./App";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
-  <WagmiConfig config={config}>
+  <OnchainKitProvider
+    apiKey={import.meta.env.VITE_ONCHAINKIT_API_KEY || "demo-api-key"}
+    chain={base}
+  >
     <App />
-  </WagmiConfig>
+  </OnchainKitProvider>
 );

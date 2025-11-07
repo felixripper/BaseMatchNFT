@@ -2,7 +2,9 @@ import { BottomNav } from "@/components/BottomNav";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Settings, Edit, Sparkles, MapPin, Briefcase, GraduationCap, Moon, Sun } from "lucide-react";
+import { Settings, Edit, Sparkles, MapPin, Briefcase, GraduationCap, Moon, Sun, Coins } from "lucide-react";
+import { Identity } from '@coinbase/onchainkit/identity';
+import { NFTCard } from '@coinbase/onchainkit/nft';
 import femaleProfile1 from "@assets/generated_images/Female_profile_example_one_9f1894cf.png";
 import { useTheme } from "@/components/ThemeProvider";
 
@@ -124,25 +126,9 @@ export default function Profile() {
         </Card>
 
         <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">NFT Verification</h3>
+          <h3 className="text-lg font-semibold mb-4">Your NFTs on Base</h3>
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Wallet Address</span>
-              <Badge variant="outline" className="font-mono text-xs">
-                0x742d...8f3a
-              </Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Network</span>
-              <Badge variant="outline" className="text-xs">Base Mainnet</Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Status</span>
-              <Badge className="text-xs bg-primary/10 text-primary border-primary/20">
-                <Sparkles className="w-3 h-3 mr-1" />
-                Verified
-              </Badge>
-            </div>
+            <NFTCard contractAddress="0x1234567890123456789012345678901234567890" tokenId="1" />
           </div>
         </Card>
       </main>

@@ -8,9 +8,10 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Wallet, CheckCircle2, Loader2 } from "lucide-react";
-import { useConnect, useAccount, useDisconnect } from 'wagmi'
+import { useAccount } from 'wagmi'
 import { verifyNFTOwnership } from '@/lib/nftVerification'
 import { useAuth } from '@/components/AuthProvider'
+import { Wallet as OnchainWallet } from '@coinbase/onchainkit/wallet';
 
 interface NFTVerificationModalProps {
   open: boolean;
@@ -24,14 +25,8 @@ export function NFTVerificationModal({
   onVerified,
 }: NFTVerificationModalProps) {
   const [isVerifying, setIsVerifying] = useState(false);
-  const { connect, connectors, isPending } = useConnect()
   const { address, isConnected } = useAccount()
-  const { disconnect } = useDisconnect()
   const { verifyWallet } = useAuth()
-
-  const handleConnectWallet = (connector: any) => {
-    connect({ connector })
-  };
 
   const handleVerifyNFT = async () => {
     if (!isConnected || !address) return;
@@ -68,28 +63,12 @@ export function NFTVerificationModal({
         <div className="space-y-4 py-6">
           {!isConnected ? (
             <div className="space-y-3">
-              {connectors.map((connector) => (
-                <Button
-                  key={connector.id}
-                  data-testid={`button-connect-${connector.id}`}
-                  onClick={() => handleConnectWallet(connector)}
-                  disabled={isPending}
-                  className="w-full h-12 text-base"
-                  variant="outline"
-                >
-                  {isPending ? (
-                    <>
-                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Connecting...
-                    </>
-                  ) : (
-                    <>
-                      <Wallet className="w-5 h-5 mr-2" />
-                      Connect {connector.name}
-                    </>
-                  )}
-                </Button>
-              ))}
+              <div className="flex justify-center">
+                <OnchainWallet />
+              </div>
+              <p className="text-sm text-center text-muted-foreground">
+                Connect your wallet to access the exclusive BaseMatchNFT community
+              </p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -117,7 +96,7 @@ export function NFTVerificationModal({
           )}
 
           <p className="text-xs text-center text-muted-foreground pt-2">
-            Powered by Base Network
+            Powered by Base Network • Low-cost transactions • Fast finality • Ethereum security
           </p>
         </div>
       </DialogContent>
